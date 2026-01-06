@@ -11,18 +11,29 @@ class _FloradexState extends State<Floradex> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Floradex',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0.5,
+      backgroundColor: Colors.white,
+      appBar: appBar(),
+      body: Column(
+        children: [
+          
+        ],
       ),
+    );
+  }
+
+  AppBar appBar() {
+    return AppBar(
+      title: Text(
+        'Floradex',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 24,
+          fontWeight: FontWeight.w900,
+        ),
+      ),
+      backgroundColor: Colors.pink.shade100,
+      elevation: 2.0,
+      shadowColor: Colors.pink,
     );
   }
 }

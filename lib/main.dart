@@ -1,4 +1,4 @@
-import 'package:Floradex/pages/floradex.dart';
+import 'package:Floradex/app.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +15,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Zain'
       ),
-      home: Floradex()
+      home: App(),
     );
   }
 }
