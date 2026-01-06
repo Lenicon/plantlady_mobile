@@ -15,10 +15,39 @@ class _FloradexState extends State<Floradex> {
       appBar: appBar(),
       body: Column(
         children: [
-          
+          searchField()
         ],
       ),
     );
+  }
+
+  Container searchField() {
+    return Container(
+          margin: EdgeInsets.only(top: 30, left: 20, right: 20),
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(
+              color: Color.fromARGB(12, 29, 22, 23),
+              blurRadius: 40,
+              spreadRadius: 0.0
+            )]
+          ),
+          child: TextField(
+            decoration: InputDecoration(
+              filled: true,
+              hintText: 'Search plant...',
+              hintStyle: TextStyle(
+                color: Colors.black54
+              ),
+              // fillColor: Color.fromARGB(255, 247, 220, 238),
+              contentPadding: EdgeInsets.all(15),
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide.none
+              )
+            ),
+          ),
+        );
   }
 
   AppBar appBar() {
@@ -31,9 +60,9 @@ class _FloradexState extends State<Floradex> {
           fontWeight: FontWeight.w900,
         ),
       ),
-      backgroundColor: Colors.pink.shade100,
-      elevation: 2.0,
-      shadowColor: Colors.pink,
+      // backgroundColor: Color.fromARGB(255, 247, 220, 238),
+      elevation: 0.0,
+      // shadowColor: Colors.pink,
     );
   }
 }

@@ -1,4 +1,6 @@
-import 'package:Floradex/pages/floradex.dart';
+
+import 'package:floradex/pages/floradex.dart';
+import 'package:floradex/pages/scanner.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatefulWidget {
@@ -13,7 +15,7 @@ class _AppState extends State<App> {
 
   final List<Widget> _pages = [
     Floradex(),
-    Floradex()
+    Scanner()
   ];
 
   @override
@@ -31,8 +33,8 @@ class _AppState extends State<App> {
           });
         },
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.phone_android_sharp), label: 'Floradex'),
-          NavigationDestination(icon: Icon(Icons.image_search), label: 'Scanner')
+          NavigationDestination(icon: Icon(Icons.filter_vintage_rounded), label: 'Floradex'),
+          NavigationDestination(icon: Icon(Icons.filter_center_focus_rounded), label: 'Scanner')
         ]
       ),
     );
