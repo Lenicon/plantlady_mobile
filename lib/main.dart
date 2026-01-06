@@ -1,3 +1,4 @@
+import 'package:Floradex/pages/floradex.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,12 +10,12 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hi World!'),
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Zain'
       ),
+      home: Floradex()
     );
   }
 }

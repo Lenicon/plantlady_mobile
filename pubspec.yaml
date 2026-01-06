@@ -1,5 +1,5 @@
-name: plantlady_mobile
-description: "A new Flutter project."
+name: Floradex
+description: "My love letter to a pretty lady."
 publish_to: 'none'
 version: 0.1.0
 
@@ -17,3 +17,23 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+fonts:
+  - family: Zain
+    fonts:
+      - asset: fonts/Zain-Black.ttf
+        weight: 900
+      - asset: fonts/Zain-ExtraBold.ttf
+        weight: 800
+      - asset: fonts/Zain-Bold.ttf
+        weight: 700
+      - asset: fonts/Zain-Regular.ttf
+        weight: 400
+      - asset: fonts/Zain-Italic.ttf
+        weight: 400
+      - asset: fonts/Zain-Light.ttf
+        weight: 300
+      - asset: fonts/Zain-LightItalic.ttf
+        weight: 300
+      - asset: fonts/Zain-ExtraLight.ttf
+        weight: 200
