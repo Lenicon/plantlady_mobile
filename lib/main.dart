@@ -5,12 +5,14 @@ void main() {
   runApp(const MainApp());
 }
 
+final GlobalKey<ScaffoldMessengerState> snackbarKey = GlobalKey<ScaffoldMessengerState>();
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: snackbarKey,
       debugShowCheckedModeBanner: false,
       theme: pinkTheme(),
       home: App(),

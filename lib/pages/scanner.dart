@@ -1,4 +1,5 @@
 import 'package:floradex/models/plant_photo.dart';
+import 'package:floradex/pages/result_screen.dart';
 import 'package:floradex/services/plant_api_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -231,16 +232,7 @@ class _ScannerState extends State<Scanner> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         onPressed: _selectedPhotos.isEmpty ? null : _isLoading ? null : () async {
-          // Logic to send _selectedPhotos to the API
-          setState(()=>_isLoading = true);
-          
-          // identify plant
-          await identifyPlant(_selectedPhotos);
-
-          // for debugging only, replace later
-          // await Future.delayed(const Duration(seconds: 3));
-
-          setState(()=>_isLoading = false);
+          _handleIdentification();
         },
         child: _isLoading 
           ? Row(
@@ -256,9 +248,63 @@ class _ScannerState extends State<Scanner> {
     );
   }
 
+  void _handleIdentification() async {
+    setState(() => _isLoading = true);
+
+    try {
+      // 1. Call the service (no context passed!)
+      final result = await PlantApiService.identifyPlant(_selectedPhotos);
+
+      // 2. If it reaches here, it succeeded. Use context to navigate.
+      if (!mounted) return;
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (c) => ResultScreen(result: result)),
+      );
+
+    } catch (e) {
+      // 3. If the service "threw" an error, we catch it here and show the popup
+      if (!mounted) return;
+      _showErrorDialog(e.toString().replaceFirst('Exception: ', ''));
+      
+    } finally {
+      if (mounted) {
+        setState(() {
+          _selectedPhotos.clear();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.error_outline, color: Colors.red),
+              SizedBox(width: 10),
+              Text("Error"),
+            ],
+          ),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   AppBar appBar() {
     return AppBar(
-      title: const Text('Identifier', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900)),
+      title: Text('Identifier', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold)),
       elevation: 0.0,
       centerTitle: true,
     );

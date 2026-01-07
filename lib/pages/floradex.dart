@@ -61,7 +61,7 @@ class _FloradexState extends State<Floradex> {
         style: TextStyle(
           color: Colors.black,
           fontSize: 24,
-          fontWeight: FontWeight.w900,
+          fontWeight: FontWeight.bold,
         ),
       ),
       // backgroundColor: Color.fromARGB(255, 247, 220, 238),

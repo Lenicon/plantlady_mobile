@@ -1,48 +1,63 @@
 import 'package:floradex/env/env.dart';
 import 'package:floradex/models/plant_photo.dart';
+import 'package:floradex/models/plant_result.dart';
+// import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 // import 'dart:io';
 
-Future<void> identifyPlant(List<PlantPhoto> selectedPhotos) async {
-  String apiKey = Env.plantKey; // Replace with your key
-  const String project = 'all';
-  final uri = Uri.parse('https://my-api.plantnet.org/v2/identify/$project?api-key=$apiKey');
+class PlantApiService {
+  static final String _apiKey = Env.plantKey;
 
-  // 1. Create the Multipart request
-  var request = http.MultipartRequest('POST', uri);
-
-  // 2. Loop through your photos and add only the ones that have a path
-  for (var photo in selectedPhotos) {
-    // Add the image file
-    request.files.add(await http.MultipartFile.fromPath(
-      'images', 
-      photo.path
-    ));
+  static Future<PlantResult> identifyPlant(List<PlantPhoto> photos) async {
+    final uri = Uri.parse('https://my-api.plantnet.org/v2/identify/all?api-key=$_apiKey');
     
-    // Add the corresponding organ label (must be lowercase)
-    request.files.add(http.MultipartFile.fromString(
-      'organs', 
-      photo.organ.toLowerCase(),
-    ));
-  }
+    var request = http.MultipartRequest('POST', uri);
 
-  try {
-    // 3. Send the request
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
+    for (var photo in photos) {
+      // Add the image file
+      request.files.add(await http.MultipartFile.fromPath(
+        'images', 
+        photo.path
+      ));
       
-      // Accessing the scientific name from your example output:
-      // String topResult = data['results'][0]['species']['scientificNameWithoutAuthor'];
-      print(response.body);
-      print('Remaining requests: ${data['remainingIdentificationRequests']}');
-    } else {
-      print('Error: ${response.statusCode}');
+      // Add the corresponding organ label (must be lowercase)
+      request.files.add(http.MultipartFile.fromString(
+        'organs', 
+        photo.organ.toLowerCase(),
+      ));
     }
-  } catch (e) {
-    print('Connection error: $e');
+
+    try {
+      
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+
+        var data = jsonDecode(response.body);
+        var bestMatch = data['results'][0]; // Get the top result
+        var species = bestMatch['species'];
+
+        PlantResult result = PlantResult(
+          imagePaths: photos.map((p) => p.path).toList(),
+          scientificName: species['scientificNameWithoutAuthor'],
+          authorship: species['scientificNameAuthorship'],
+          family: species['family']['scientificNameWithoutAuthor'],
+          commonNames: List<String>.from(species['commonNames']),
+          nickname: species['scientificNameWithoutAuthor'].split(' ')[0], // First word
+        );
+
+        return result;
+      
+      } else {
+        throw Exception("Server Error: ${response.statusCode}");
+      }
+
+    } catch (e) {
+      throw Exception("Check your internet connection and try again.");
+    }
+
   }
+
 }
