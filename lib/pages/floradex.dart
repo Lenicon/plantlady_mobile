@@ -21,6 +21,8 @@ class _FloradexState extends State<Floradex> {
     );
   }
 
+
+  // BUILDER FUNCTIONS
   Container searchField() {
     return Container(
           margin: EdgeInsets.only(top: 30, left: 20, right: 20),
@@ -34,7 +36,7 @@ class _FloradexState extends State<Floradex> {
           child: TextField(
             decoration: InputDecoration(
               filled: true,
-              hintText: 'Search plant...',
+              hintText: 'Search discovered plant...',
               hintStyle: TextStyle(
                 color: Colors.black54
               ),

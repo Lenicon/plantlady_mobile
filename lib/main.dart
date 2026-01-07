@@ -12,21 +12,25 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Zain',
-        colorScheme: ColorScheme(
-          brightness: Brightness.light,
-          primary: Color.fromARGB(255, 245, 159, 216),
-          onPrimary: Colors.black,
-          secondary: Color.fromARGB(255, 243, 193, 226),
-          onSecondary: Colors.black,
-          error: Colors.red.shade200,
-          onError: Colors.red.shade400,
-          surface: Color.fromARGB(255, 247, 220, 238),
-          onSurface: Colors.black
-        )
-      ),
+      theme: pinkTheme(),
       home: App(),
+    );
+  }
+
+  ThemeData pinkTheme() {
+    return ThemeData(
+      fontFamily: 'Zain',
+      colorScheme: ColorScheme(
+        brightness: Brightness.light,
+        primary: Color.fromARGB(255, 255, 121, 233),
+        onPrimary: Colors.black,
+        secondary: Color.fromARGB(255, 255, 143, 218),
+        onSecondary: Colors.black,
+        error: Colors.red.shade200,
+        onError: Colors.red.shade400,
+        surface: Color.fromARGB(255, 255, 197, 236),
+        onSurface: Colors.black
+      )
     );
   }
 }
