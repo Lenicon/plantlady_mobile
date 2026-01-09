@@ -1,7 +1,7 @@
 name: floradex
 description: "My love letter to a pretty lady."
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.1
 
 environment:
   sdk: ^3.10.4
@@ -16,6 +16,7 @@ dependencies:
   path_provider: ^2.1.5
   path: ^1.9.1
   flutter_native_splash: ^2.4.7
+  gal: ^2.3.2
 
 dev_dependencies:
   flutter_test:

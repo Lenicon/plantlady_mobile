@@ -6,6 +6,7 @@ import 'package:floradex/main.dart';
 import 'package:floradex/models/plant_result.dart';
 import 'package:floradex/services/storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:gal/gal.dart';
 
 class PlantDetailScreen extends StatefulWidget {
   final PlantResult plant;
@@ -35,7 +36,20 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
       // backgroundColor: Colors.white,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       
-      appBar: AppBar(title: Text("${widget.plant.nickname}'s Details")),
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                widget.plant.nickname,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const Text("'s Details"),
+          ],
+        ),
+      ),
 
       body: _showcasePlant(),
       
@@ -79,6 +93,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
           
           TextField(
             controller: _nicknameController,
+            textCapitalization: TextCapitalization.words,
             decoration: const InputDecoration(labelText: 'Nickname', border: OutlineInputBorder()),
           ),
           
@@ -125,12 +140,27 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
     );
   }
 
+  // Check if current text fields differ from the original plant data
+  bool get _hasChanges {
+    return _nicknameController.text != widget.plant.nickname ||
+          _notesController.text != widget.plant.notes;
+  }
+
   Expanded _updateButton() {
     return Expanded(
-      child: ElevatedButton(
-        onPressed: _isSaving ? null : _handleUpdate,
-        child: Text(_isSaving ? "Updating..." : "Update Details"),
-      ),
+      child: ListenableBuilder(
+        listenable: Listenable.merge([_nicknameController, _notesController]),
+        builder: (context, child){
+
+          bool canSave = _hasChanges && !_isSaving;
+
+          return ElevatedButton(
+            onPressed: canSave ? _handleUpdate : null,
+            child: Text(_isSaving ? "Updating..." : "Update Details"),
+          );
+        }
+      ) 
+      
     );
   }
 
@@ -160,7 +190,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                   // ignore: use_build_context_synchronously
                   Navigator.pop(context); 
                   snackbarKey.currentState?.showSnackBar(
-                    const SnackBar(content: Text("Plant removed from collection"), duration: Durations.long3)
+                    const SnackBar(content: Text("Plant removed from collection"), duration: Duration(seconds: 2))
                   );
                 }
               },
@@ -185,9 +215,8 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
 
       if (mounted) {
         snackbarKey.currentState?.showSnackBar(
-          const SnackBar(content: Text("Changes saved!"), duration: Durations.long3)
+          const SnackBar(content: Text("Changes saved!"), duration: Duration(seconds: 2))
         );
-        Navigator.pop(context);
       }
     } catch (e) {
       _showErrorDialog("Update failed: $e");
@@ -200,6 +229,8 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
   ////////////// FOR IMAGES /////////////////////
 
   void _openFullImage(List<String> paths, int initialIndex) {
+    int currentIndex = initialIndex;
+
     showDialog(
       context: context,
       useSafeArea: false, // Allows the image to take up the whole screen
@@ -212,6 +243,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
               child: PageView.builder(
                 controller: PageController(initialPage: initialIndex),
                 itemCount: paths.length,
+                onPageChanged: (index) => currentIndex = index,
                 itemBuilder: (context, index) {
                   return InteractiveViewer( // Allows pinching to zoom
                     child: Image.file(
@@ -222,14 +254,52 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                 },
               ),
             ),
-            // 2. Close Button
+            // Buttons
             Positioned(
-              top: 40,
-              left: 10,
-              child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white, size: 30),
-                onPressed: () => Navigator.pop(context),
-              ),
+              top: 50,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children:[
+                    // Close Button
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    // Download Button
+                    IconButton(
+                      // style: TextButton.styleFrom(iconSize: 30, backgroundColor: Colors.black45, foregroundColor: Colors.white),
+                      icon: const Icon(Icons.download_rounded, color: Colors.white, size: 30),
+                      onPressed: () async {
+                        String currentPath = paths[currentIndex];
+                        
+                        if (StorageService.isSaved(currentPath)){
+                          snackbarKey.currentState?.showSnackBar(
+                            const SnackBar(content: Text("Image already saved!"), duration: Duration(seconds: 2))
+                          );
+                          return;
+                        }
+                        
+                        try {
+                          await Gal.putImage(currentPath, album: 'DaisieDex');
+
+                          StorageService.markAsSaved(currentPath);
+                          snackbarKey.currentState?.showSnackBar(
+                            const SnackBar(content: Text("Saved to Gallery!"), duration: Duration(seconds: 2))
+                          );
+                          
+                        } catch (e) {
+                          _showErrorDialog("Couldn't save image: $e");
+                        }
+                      },
+                    )
+                  ]
+                )
+              ) 
+              
             ),
           ],
         ),

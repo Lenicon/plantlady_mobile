@@ -4,6 +4,7 @@ import 'package:floradex/main.dart';
 import 'package:floradex/models/plant_result.dart';
 import 'package:floradex/services/storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:gal/gal.dart';
 
 class ResultScreen extends StatefulWidget {
   final PlantResult result;
@@ -76,6 +77,7 @@ class _ResultScreenState extends State<ResultScreen> {
           // Nickname (Editable)
           TextField(
             controller: _nicknameController,
+            textCapitalization: TextCapitalization.words,
             decoration: const InputDecoration(labelText: 'Nickname', border: OutlineInputBorder()),
             onChanged: (val) => widget.result.nickname = val,
           ),
@@ -146,7 +148,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
             if (mounted) {
               snackbarKey.currentState?.showSnackBar(
-                const SnackBar(content: Text("Added to collection!"), duration: Durations.long3)
+                const SnackBar(content: Text("Added to collection!"), duration: Duration(seconds: 2))
               );
               
               // ignore: use_build_context_synchronously
@@ -169,6 +171,8 @@ class _ResultScreenState extends State<ResultScreen> {
 
   ////////////// FOR IMAGES /////////////////////
   void _openFullImage(List<String> paths, int initialIndex) {
+    int currentIndex = initialIndex;
+
     showDialog(
       context: context,
       useSafeArea: false, // Allows the image to take up the whole screen
@@ -181,6 +185,7 @@ class _ResultScreenState extends State<ResultScreen> {
               child: PageView.builder(
                 controller: PageController(initialPage: initialIndex),
                 itemCount: paths.length,
+                onPageChanged: (index) => currentIndex = index,
                 itemBuilder: (context, index) {
                   return InteractiveViewer( // Allows pinching to zoom
                     child: Image.file(
@@ -191,20 +196,59 @@ class _ResultScreenState extends State<ResultScreen> {
                 },
               ),
             ),
-            // 2. Close Button
+            // Buttons
             Positioned(
-              top: 40,
-              left: 20,
-              child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white, size: 30),
-                onPressed: () => Navigator.pop(context),
-              ),
+              top: 50,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children:[
+                    // Close Button
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    // Download Button
+                    IconButton(
+                      // style: TextButton.styleFrom(iconSize: 30, backgroundColor: Colors.black45, foregroundColor: Colors.white),
+                      icon: const Icon(Icons.download_rounded, color: Colors.white, size: 30),
+                      onPressed: () async {
+                        String currentPath = paths[currentIndex];
+                        
+                        if (StorageService.isSaved(currentPath)){
+                          snackbarKey.currentState?.showSnackBar(
+                            const SnackBar(content: Text("Image already saved!"), duration: Duration(seconds: 2))
+                          );
+                          return;
+                        }
+                        
+                        try {
+                          await Gal.putImage(currentPath, album: 'DaisieDex');
+
+                          StorageService.markAsSaved(currentPath);
+                          snackbarKey.currentState?.showSnackBar(
+                            const SnackBar(content: Text("Saved to Gallery!"), duration: Duration(seconds: 2))
+                          );
+                          
+                        } catch (e) {
+                          _showErrorDialog("Couldn't save image: $e");
+                        }
+                      },
+                    )
+                  ]
+                )
+              ) 
+              
             ),
           ],
         ),
       ),
     );
   }
+
   Widget _buildDynamicCollage(List<String> paths) {
     double height = 200; // Total height for the banner
     int count = paths.length;

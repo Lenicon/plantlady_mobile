@@ -149,4 +149,16 @@ class StorageService {
     }
     return tempPath;
   }
+
+  // check if saved this session
+  static final Set<String> globalSavedPaths = {};
+
+  static void markAsSaved(String path) {
+    globalSavedPaths.add(path);
+  }
+
+  static bool isSaved(String path) {
+    return globalSavedPaths.contains(path);
+  }
+
 }
