@@ -49,7 +49,7 @@ class PlantApiService {
 
         
         // Get Wikipedia Result
-        WikipediaResult wikires = await _fetchWiki(species['scientificNameWithoutAuthor']);
+        WikipediaResult wikires = await fetchWiki(species['scientificNameWithoutAuthor']);
 
         PlantResult result = PlantResult(
           imagePaths: photos.map((p) => p.path).toList(),
@@ -58,7 +58,7 @@ class PlantApiService {
           family: species['family']['scientificNameWithoutAuthor'],
           commonNames: List<String>.from(species['commonNames']),
           nickname: species['scientificNameWithoutAuthor'].split(' ')[0], // First word
-          wikiSummary: wikires.fetchedSummary,
+          wikiSummary: wikires.wikiSummary,
           wikiImageURL: wikires.wikiImageURL
         );
 
@@ -75,11 +75,12 @@ class PlantApiService {
   }
 
   // Fetch wikipedia summary and image
-  static Future<WikipediaResult> _fetchWiki(String scientificName) async {
-    final encodedTitle = Uri.encodeComponent(scientificName);
-    final url = 'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts|pageimages&exintro&explaintext&redirects=1&titles=$encodedTitle&pithumbsize=1000';
+  static Future<WikipediaResult> fetchWiki(String scientificName) async {
 
-    WikipediaResult res = WikipediaResult(fetchedSummary: '', wikiImageURL: '');
+    final encodedTitle = encodePlantName(scientificName);
+    
+    final url = 'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts|pageimages&exintro&explaintext&redirects=1&titles=$encodedTitle&pithumbsize=1000';
+    WikipediaResult res = WikipediaResult(wikiSummary: '', wikiImageURL: '');
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -92,7 +93,7 @@ class PlantApiService {
 
         if (pageId != "-1"){
           // If found pageID
-          res.fetchedSummary = pages[pageId]['extract']?.split('\n\n==')[0];
+          res.wikiSummary = pages[pageId]['extract']?.split('\n\n==')[0];
           res.wikiImageURL = pages[pageId]['thumbnail']?['source'];
 
           return res;
@@ -100,12 +101,17 @@ class PlantApiService {
 
         return res;
 
-      } else {
+      } 
+      else {
         return res;
       }
     } catch (e) {
       return res;
     }
+  }
+
+  static String encodePlantName(String scientificName){
+    return Uri.encodeComponent(scientificName.replaceAll(' × ', ' ').replaceAll(' x ', ' '));
   }
 }
 

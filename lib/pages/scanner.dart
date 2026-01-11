@@ -260,10 +260,9 @@ class _ScannerState extends State<Scanner> {
     setState(() => _isLoading = true);
 
     try {
-      // 1. Call the service (no context passed!)
+      // Call the service
       final result = await PlantApiService.identifyPlant(_selectedPhotos);
 
-      // 2. If it reaches here, it succeeded. Use context to navigate.
       if (!mounted) return;
       setState(() => _caughtError = false);
       // Wait for the Result Screen to close
@@ -272,13 +271,13 @@ class _ScannerState extends State<Scanner> {
         MaterialPageRoute(builder: (c) => ResultScreen(result: result)),
       );
 
-      // If the user saved a plant, refresh the data
+      // If the user saved a plant refresh data
       if (wasSaved == true) {
-        StorageService.load(); // Call your existing load function
+        StorageService.load();
       }
 
     } catch (e) {
-      // 3. If the service "threw" an error, we catch it here and show the popup
+      
       if (!mounted) return;
       setState(() => _caughtError = true);
       _showErrorDialog(e.toString().replaceFirst('Exception: ', ''));

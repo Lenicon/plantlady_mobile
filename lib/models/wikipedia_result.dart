@@ -1,9 +1,9 @@
 class WikipediaResult {
-  String? fetchedSummary;
+  String? wikiSummary;
   String? wikiImageURL;
 
   WikipediaResult({
-    String? fetchedSummary,
-    String? wikiImageURL,
+    String wikiSummary = '',
+    String wikiImageURL = '',
   });
 }

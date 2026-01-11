@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:floradex/main.dart';
 import 'package:floradex/models/plant_result.dart';
+import 'package:floradex/services/plant_api_service.dart';
 import 'package:floradex/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
@@ -118,7 +119,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
           ),
           const SizedBox(height: 20),
 
-          _wikiRow(widget.plant.wikiSummary!, widget.plant.wikiImageURL!),
+          _wikiRow(widget.plant.wikiSummary, widget.plant.wikiImageURL),
 
           SizedBox(
             width: double.infinity,
@@ -536,7 +537,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                             SizedBox(width: 4),
                             GestureDetector(
                               onTap: () async {
-                                final encodedTitle = Uri.encodeComponent(widget.plant.scientificName);
+                                final encodedTitle = PlantApiService.encodePlantName(widget.plant.scientificName);
                                 final Uri url = Uri.parse('https://en.wikipedia.org/wiki/$encodedTitle');
                                 if (!await launchUrl(url, mode: LaunchMode.externalApplication)){
                                   _showErrorDialog("Sorry pretty lady, I couldn't open the Wikipedia link.");
@@ -553,7 +554,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
               )
             ),
 
-            if (summary == '') const Divider()
+          if (summary == '') const Divider()
         ],
       ),
     );

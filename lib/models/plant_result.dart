@@ -7,8 +7,8 @@ class PlantResult {
   final String authorship;
   final String family;
   final List<String> commonNames;
-  String? wikiSummary;
-  String? wikiImageURL;
+  String wikiSummary;
+  String wikiImageURL;
 
   PlantResult({
     String? id, // Optional in constructor
@@ -19,7 +19,11 @@ class PlantResult {
     required this.authorship,
     required this.family,
     required this.commonNames,
-    this.wikiSummary = '',
-    this.wikiImageURL = '',
-  }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString(); // Generate ID if not provided
+    String? wikiSummary,
+    String? wikiImageURL,
+  }) :
+    wikiSummary = wikiSummary ?? '',
+    wikiImageURL = wikiImageURL ?? '',
+    id = id ?? DateTime.now().millisecondsSinceEpoch.toString(); // Generate ID if not provided
+  
 }
