@@ -9,12 +9,17 @@ A mobile app that can **identify plants** based on photos as well as keep a coll
 
 ## Screenshots
 
-![Plant Identifier](assets/images/Screenshot_2026-01-10-01-57-07-39_38de9374d91fe2d4a83138978662e3a6.jpg)
+<!-- ![Plant Identifier](assets/images/1.jpg) -->
+<img src="assets/images/1.jpg" width="540" height="1200">
 
-![Identification Result](assets/images/Screenshot_2026-01-10-01-57-17-22_38de9374d91fe2d4a83138978662e3a6.jpg)
+<!-- ![Identification Result](assets/images/2.jpg) -->
+<img src="assets/images/2.jpg" width="540" height="1200">
 
-![Florilegium](assets/images/Screenshot_2026-01-10-02-02-22-04_38de9374d91fe2d4a83138978662e3a6.jpg)
+<!-- ![Florilegium](assets/images/3.jpg) -->
+<img src="assets/images/3.jpg" width="540" height="1200">
 
-![Plant Details 1](assets/images/Screenshot_2026-01-10-01-58-29-99_38de9374d91fe2d4a83138978662e3a6.jpg)
+<!-- ![Plant Details 1](assets/images/4.jpg) -->
+<img src="assets/images/4.jpg" width="540" height="1200">
 
-![Plant Details 2](assets/images/Screenshot_2026-01-10-01-58-23-42_38de9374d91fe2d4a83138978662e3a6.jpg)
+<!-- ![Plant Details 2](assets/images/5.jpg) -->
+<img src="assets/images/5.jpg" width="540" height="1200">
