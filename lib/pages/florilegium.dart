@@ -1,18 +1,18 @@
 import 'dart:io';
 
-import 'package:floradex/models/plant_result.dart';
-import 'package:floradex/pages/plant_details.dart';
-import 'package:floradex/services/storage_service.dart';
+import 'package:daisiedex/models/plant_result.dart';
+import 'package:daisiedex/pages/plant_details.dart';
+import 'package:daisiedex/services/storage_service.dart';
 import 'package:flutter/material.dart';
 
-class Floradex extends StatefulWidget {
-  const Floradex({super.key});
+class Florilegium extends StatefulWidget {
+  const Florilegium({super.key});
 
   @override
-  State<Floradex> createState() => _FloradexState();
+  State<Florilegium> createState() => _FlorilegiumState();
 }
 
-class _FloradexState extends State<Floradex> {
+class _FlorilegiumState extends State<Florilegium> {
   // List<dynamic> _savedPlants = [];
   // static List<dynamic> filteredPlants = [];
   final TextEditingController _searchController = TextEditingController();
@@ -73,7 +73,7 @@ class _FloradexState extends State<Floradex> {
 
                       // Map JSON to PlantResult object for the Details screen
                       final plantObj = PlantResult(
-                        id: plantData['id'], // ID is crucial for updating/deleting
+                        id: plantData['id'], // ID for easy finding
                         nickname: plantData['nickname'] == '' ? "Unnamed" : plantData['nickname'] ?? 'Unnamed',
                         notes: plantData['notes'] ?? "",
                         imagePaths: List<String>.from(plantData['imagePaths'] ?? []),

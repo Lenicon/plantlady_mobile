@@ -1,7 +1,7 @@
-import 'package:floradex/env/env.dart';
-import 'package:floradex/models/plant_photo.dart';
-import 'package:floradex/models/plant_result.dart';
-import 'package:floradex/models/wikipedia_result.dart';
+import 'package:daisiedex/env/env.dart';
+import 'package:daisiedex/models/plant_photo.dart';
+import 'package:daisiedex/models/plant_result.dart';
+import 'package:daisiedex/models/wikipedia_result.dart';
 // import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -23,13 +23,13 @@ class PlantApiService {
     var request = http.MultipartRequest('POST', uri);
 
     for (var photo in photos) {
-      // Add the image file
+      // Add image file
       request.files.add(await http.MultipartFile.fromPath(
         'images', 
         photo.path
       ));
       
-      // Add the corresponding organ label (must be lowercase)
+      // Add corresponding organ label (must be lowercase)
       request.files.add(http.MultipartFile.fromString(
         'organs', 
         photo.organ.toLowerCase(),
@@ -44,11 +44,11 @@ class PlantApiService {
       if (response.statusCode == 200) {
 
         var data = jsonDecode(response.body);
-        var bestMatch = data['results'][0]; // Get the top result
+        var bestMatch = data['results'][0]; // top result
         var species = bestMatch['species'];
 
         
-        // Get Wikipedia Result
+        // Wikipedia Result
         WikipediaResult wikires = await fetchWiki(species['scientificNameWithoutAuthor']);
 
         PlantResult result = PlantResult(

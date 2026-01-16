@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:floradex/models/plant_result.dart';
+import 'package:daisiedex/models/plant_result.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -11,14 +11,14 @@ class StorageService {
   static List<dynamic> savedPlants = [];
   static ValueNotifier<List<dynamic>> plantsNotifier = ValueNotifier([]);
 
-  /// Loads all plants from all collection files and updates the notifier
+  /// Loads all plants from all collection files and updates notifier
   static Future<void> load() async {
     final plants = await getAllSavedPlants();
     savedPlants = plants;
     plantsNotifier.value = plants;
   }
 
-  /// Saves a new plant with a unique ID and full image path list
+  /// Saves new plant with unique ID and full image path list
   static Future<void> savePlant(PlantResult result) async {
     final directory = await getApplicationDocumentsDirectory();
     int fileIndex = 1;
@@ -40,10 +40,10 @@ class StorageService {
     List<dynamic> currentList = jsonDecode(await targetFile.readAsString());
     
     currentList.add({
-      'id': result.id, // Saving the unique ID
+      'id': result.id, // Saving unique ID
       'nickname': result.nickname,
       'firstImage': result.imagePaths.isNotEmpty ? result.imagePaths.first : '',
-      'imagePaths': result.imagePaths, // Save all paths for the collage
+      'imagePaths': result.imagePaths, // Save all paths for collage
       'scientificName': result.scientificName,
       'authorship': result.authorship,
       'family': result.family,
@@ -54,10 +54,10 @@ class StorageService {
     });
 
     await targetFile.writeAsString(jsonEncode(currentList));
-    await load(); // Refresh the notifier automatically
+    await load(); // Refresh notifier automatically
   }
 
-  /// Updates nickname and notes for an existing plant via ID
+  /// Updates nickname and notes for existing plant by ID
   static Future<void> updatePlant(PlantResult updatedPlant) async {
     final directory = await getApplicationDocumentsDirectory();
     final files = directory.listSync().where((file) => file.path.contains('collection_'));
@@ -71,14 +71,14 @@ class StorageService {
           list[index]['nickname'] = updatedPlant.nickname;
           list[index]['notes'] = updatedPlant.notes;
           await file.writeAsString(jsonEncode(list));
-          await load(); // Broadcast changes
+          await load(); // load changes
           return; 
         }
       }
     }
   }
 
-  /// Deletes a plant from the JSON files and notifies the UI
+  /// Deletes plant from JSON files and notifies UI
   static Future<void> deletePlant(String id) async {
     final directory = await getApplicationDocumentsDirectory();
     final files = directory.listSync().where((file) => file.path.contains('collection_'));
@@ -88,7 +88,7 @@ class StorageService {
         String content = await file.readAsString();
         List<dynamic> list = jsonDecode(content);
         
-        // Find the plant to get its image paths before deleting it
+        // Find plant to get its image paths before deleting it
         int index = list.indexWhere((plant) => plant['id'] == id);
 
         if (index != -1) {
@@ -105,13 +105,12 @@ class StorageService {
             }
           }
 
-          // Remove from the JSON list
+          // Remove from JSON
           list.removeAt(index);
 
-          // Save the updated list back to the file
+          // Save updated list back to file
           await file.writeAsString(jsonEncode(list));
 
-          // Broadcast the change to Floradex real-time
           await load(); 
           return;
         }
@@ -152,7 +151,7 @@ class StorageService {
     return tempPath;
   }
 
-  // Check if saved this session to prevent multisaving
+  // Check if saved this session so no multisaving
   static final Set<String> globalSavedPaths = {};
 
   static void markAsSaved(String path) {

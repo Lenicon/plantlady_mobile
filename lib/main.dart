@@ -1,4 +1,4 @@
-import 'package:floradex/app.dart';
+import 'package:daisiedex/app.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -48,7 +48,7 @@ class MainApp extends StatelessWidget {
         onError: Colors.white,
       ),
       
-      // Applying some logo-inspired styling to components
+      
       appBarTheme: const AppBarTheme(
         backgroundColor: Color(0xFFFFB3BA),
         foregroundColor: Colors.black,
@@ -77,7 +77,7 @@ class MainApp extends StatelessWidget {
       ),
       
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: Color(0xFFFDE06C), // Using the yellow center for the FAB
+        backgroundColor: Color(0xFFFDE06C),
         foregroundColor: Colors.black,
       ),
 

@@ -1,21 +1,21 @@
-import 'package:floradex/models/plant_photo.dart';
-import 'package:floradex/pages/result_screen.dart';
-import 'package:floradex/services/plant_api_service.dart';
-import 'package:floradex/services/storage_service.dart';
+import 'package:daisiedex/models/plant_photo.dart';
+import 'package:daisiedex/pages/result_screen.dart';
+import 'package:daisiedex/services/plant_api_service.dart';
+import 'package:daisiedex/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
-class Scanner extends StatefulWidget {
-  const Scanner({super.key});
+class Identifier extends StatefulWidget {
+  const Identifier({super.key});
 
   @override
-  State<Scanner> createState() => _ScannerState();
+  State<Identifier> createState() => _IdentifierState();
 }
 
-class _ScannerState extends State<Scanner> {
-  // Now we use a dynamic list of your custom class
+class _IdentifierState extends State<Identifier> {
+  // Store photos picked in identifier
   final List<PlantPhoto> _selectedPhotos = [];
   final int _maxPhotos = 5;
 
@@ -41,7 +41,7 @@ class _ScannerState extends State<Scanner> {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
               ),
-              // We add 1 to the count to show the "Add" button
+              // Increase item count
               itemCount: _selectedPhotos.length < _maxPhotos 
                   ? _selectedPhotos.length + 1 
                   : _selectedPhotos.length,
@@ -60,7 +60,7 @@ class _ScannerState extends State<Scanner> {
     );
   }
 
-  // UI for an image that has already been picked
+  // UI for selected image
   Widget _buildImageThumbnail(int index) {
     final photo = _selectedPhotos[index];
     return Stack(
@@ -74,7 +74,7 @@ class _ScannerState extends State<Scanner> {
             ),
           ),
         ),
-        // Label overlay (Leaf, Flower, etc.)
+        // Label overlay for image
         Positioned(
           bottom: 0,
           left: 0,
@@ -109,7 +109,7 @@ class _ScannerState extends State<Scanner> {
     );
   }
 
-  // The empty slot used to add a new photo
+  // Empty slot used to add new photo
   final ImagePicker _picker = ImagePicker();
   Widget _buildAddButton() {
     return GestureDetector(
@@ -183,11 +183,10 @@ class _ScannerState extends State<Scanner> {
   Future<void> _processImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(
       source: source,
-      imageQuality: 80, // Reduces file size for faster API uploads
+      imageQuality: 80, // Reduces file size
     );
 
     if (image != null) {
-      // Re-using the organ dialog from our previous step
       String? selectedOrgan = await _showOrganDialog();
 
       if (selectedOrgan != null) {
@@ -260,7 +259,8 @@ class _ScannerState extends State<Scanner> {
     setState(() => _isLoading = true);
 
     try {
-      // Call the service
+      // Remember this to know how to setup mounts later for your new projects
+      // Call service
       final result = await PlantApiService.identifyPlant(_selectedPhotos);
 
       if (!mounted) return;

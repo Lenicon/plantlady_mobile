@@ -1,7 +1,7 @@
 
-import 'package:floradex/pages/floradex.dart';
-import 'package:floradex/pages/scanner.dart';
-import 'package:floradex/services/storage_service.dart';
+import 'package:daisiedex/pages/florilegium.dart';
+import 'package:daisiedex/pages/identifier.dart';
+import 'package:daisiedex/services/storage_service.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatefulWidget {
@@ -15,8 +15,8 @@ class _AppState extends State<App> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    Floradex(),
-    Scanner()
+    Florilegium(),
+    Identifier()
   ];
 
   @override

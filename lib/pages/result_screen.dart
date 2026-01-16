@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:floradex/main.dart';
-import 'package:floradex/models/plant_result.dart';
-import 'package:floradex/services/plant_api_service.dart';
-import 'package:floradex/services/storage_service.dart';
+import 'package:daisiedex/main.dart';
+import 'package:daisiedex/models/plant_result.dart';
+import 'package:daisiedex/services/plant_api_service.dart';
+import 'package:daisiedex/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
 import 'package:http/http.dart' as http;
