@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+// TODO: Add Google sign in and upload in cloud, maybe try firebase
 class StorageService {
   static const int maxFileSize = 20 * 1024 * 1024; // 20 MB
 

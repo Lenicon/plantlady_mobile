@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:daisiedex/env/env.dart';
 import 'package:daisiedex/models/plant_photo.dart';
 import 'package:daisiedex/models/plant_result.dart';
 import 'package:daisiedex/models/wikipedia_result.dart';
 // import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 import 'dart:convert';
 
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -13,6 +16,13 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 class PlantApiService {
   static final String _apiKey = Env.plantKey;
 
+  // For handling handshake cuz of the damn certificate security
+  static http.Client _getSafeClient(){
+    final HttpClient client = HttpClient()
+      ..badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+    return IOClient(client);
+  }
+
   static Future<PlantResult> identifyPlant(List<PlantPhoto> photos) async {
     final bool isConnected = await InternetConnection().hasInternetAccess;
 
@@ -20,9 +30,11 @@ class PlantApiService {
 
     final uri = Uri.parse('https://my-api.plantnet.org/v2/identify/all?api-key=$_apiKey');
     
+    var client = _getSafeClient();
     var request = http.MultipartRequest('POST', uri);
 
     for (var photo in photos) {
+
       // Add image file
       request.files.add(await http.MultipartFile.fromPath(
         'images', 
@@ -38,7 +50,7 @@ class PlantApiService {
 
     try {
       
-      var streamedResponse = await request.send();
+      var streamedResponse = await client.send(request);
       var response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
@@ -70,6 +82,8 @@ class PlantApiService {
 
     } catch (e) {
       throw Exception("Something went wrong. I don't think that's a plant, pretty lady.");
+    } finally {
+      client.close();
     }
 
   }

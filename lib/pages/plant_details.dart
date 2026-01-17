@@ -231,6 +231,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
 
   ////////////// FOR IMAGES /////////////////////
 
+  // TODO: If on PC, add buttons to scroll left and right
   void _openFullImage(List<String> paths, int initialIndex) {
     int currentIndex = initialIndex;
 
